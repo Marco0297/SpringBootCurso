@@ -11,4 +11,5 @@ import java.util.List;
 public interface IGetPerson {
     List<PersonasModel>getAllPersonas();
     ResponseEntity<PersonasModel> getPersonaById(Long id);
+    List<PersonasModel> getByEdadRange(int edadMin, int edadMax);
 }

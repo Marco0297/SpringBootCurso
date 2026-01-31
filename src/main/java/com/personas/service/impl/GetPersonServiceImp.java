@@ -38,4 +38,9 @@ public class GetPersonServiceImp implements IGetPerson {
          * }
          */
     }
+
+    @Override
+    public List<PersonasModel> getByEdadRange(int edadMin, int edadMax) {
+        return personaRepository.findByEdadBetween(edadMin, edadMax);
+    }
 }
