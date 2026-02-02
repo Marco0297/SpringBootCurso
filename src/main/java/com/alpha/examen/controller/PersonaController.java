@@ -5,7 +5,6 @@ import com.alpha.examen.service.IPersona;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +15,8 @@ public class PersonaController {
     private IPersona iPersona;
 
 
-    @GetMapping(value = "/student/{registro}")
-    public ResponseEntity<ResponseApiRecord> createPerson(@PathVariable int registro) {
+    @GetMapping(value = "/student")
+    public ResponseEntity<ResponseApiRecord> createPerson(@RequestParam int registro) {
         return iPersona.createPerson(registro);
     }
 }

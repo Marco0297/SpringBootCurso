@@ -30,20 +30,20 @@ public class PersonaService implements IPersona {
     @Override
     public ResponseEntity<ResponseApiRecord> createPerson(int cantidad) {
         if(cantidad<=0){
-            throw new IllegalArgumentException("La cantidad debe ser mayor a cero");
+            return ResponseEntity.badRequest().body(new ResponseApiRecord("La cantidad debe ser mayor a cero", List.of()));
         }
 
-        List<UserDetails> detailsList = new ArrayList<>();
-        List<PersonaModel> personaModels = new ArrayList<>();
         try{
-            for(int i=0; i<=cantidad; i++){
+            List<UserDetails> detailsList = new ArrayList<>();
+            List<PersonaModel> personaModels = new ArrayList<>();
+
+            for(int i=0; i<cantidad; i++){
 
                 String genero = Math.random() < 0.5 ? "male" : "female";
                 ResponseEntity<String> obtenerGender = obtenerGenderWithLamnbda(genero).block();
 
                 if(obtenerGender == null || obtenerGender.getBody().isEmpty()){
-                    ResponseApiRecord error = new ResponseApiRecord("Sin resultados", new ArrayList<>());
-                    return ResponseEntity.internalServerError().body(error);
+                    return ResponseEntity.internalServerError().body(new ResponseApiRecord("El API regreso informaciòn vacia", List.of()));
                 }
 
                 String responseJson = obtenerGender.getBody();
@@ -57,27 +57,28 @@ public class PersonaService implements IPersona {
                     String email = results.path("email").asText(null);
                     String phone = results.path("phone").asText(null);
                     String cell = results.path("cell").asText(null);
+                    String gender = results.path("gender").asText(null);
 
-                    PersonaModel personaModel = new PersonaModel(firstName,lastName,email,phone,cell);
+                    PersonaModel personaModel = new PersonaModel(firstName,lastName,email,phone,cell, gender);
                     personaModels.add(personaModel);
 
-                    UserDetails userDetails = new UserDetails(firstName,lastName,email,phone,cell);
+                    UserDetails userDetails = new UserDetails(firstName,lastName,email,phone,cell, gender);
                     detailsList.add(userDetails);
 
                 }else {
-                    ResponseApiRecord error = new ResponseApiRecord("Sin resultados", new ArrayList<>());
-                    return ResponseEntity.internalServerError().body(error);
+                    return ResponseEntity.internalServerError().body(new ResponseApiRecord("El nodo results regreso vacio", List.of()));
                 }
             }
 
+
             personaRepository.saveAll(personaModels);
 
-            ResponseApiRecord responseApiRecord = new ResponseApiRecord("OK", detailsList);
-
+            ResponseApiRecord responseApiRecord = new ResponseApiRecord("Se crearon registros en BD correctamente: Número de registros :" + detailsList.size(), detailsList);
             return ResponseEntity.ok(responseApiRecord);
+
+
         } catch (Exception e) {
-            ResponseApiRecord error = new ResponseApiRecord("No se logro hacer registro por falla de API-users", new ArrayList<>());
-            return ResponseEntity.internalServerError().body(error);
+            return ResponseEntity.internalServerError().body(new ResponseApiRecord("No se logro hacer registro por falla de API-users", List.of()));
         }
 
     }

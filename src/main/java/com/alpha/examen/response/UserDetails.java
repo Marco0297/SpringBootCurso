@@ -5,7 +5,8 @@ public record UserDetails (
         String lastName,
         String email,
         String phone,
-        String cell
+        String cell,
+        String gender
 ){
 
 }

@@ -10,4 +10,6 @@ public class ExamenApplication {
 		SpringApplication.run(ExamenApplication.class, args);
 	}
 
+
+    //http://localhost:8080/student?registro=5 -- crear usuaurios
 }

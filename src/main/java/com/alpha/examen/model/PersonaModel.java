@@ -33,6 +33,18 @@ public class PersonaModel {
     @Column(name = "CELL")
     private String cell;
 
-    public PersonaModel(String text, String text1, String email, String phone, String cell) {
+    @Column(name = "GENERO")
+    private String genero;
+
+    protected PersonaModel() {
+    }
+
+    public PersonaModel(String nombre, String apellido, String email, String phone, String cell, String genero) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.phone = phone;
+        this.cell = cell;
+        this.genero = genero;
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     private static String URI_USER_RANDOM = "https://randomuser.me/api/";
-
+    //private static String URI_USER_RANDOM = "https://randomuser.me/api/DS/";
     @Bean(value = "userRandom")
     public WebClient webClient() {
         return WebClient.builder().baseUrl(URI_USER_RANDOM).build();
