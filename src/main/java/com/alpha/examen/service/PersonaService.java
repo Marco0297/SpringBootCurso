@@ -1,11 +1,13 @@
 package com.alpha.examen.service;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
 import com.alpha.examen.model.PersonaModel;
 import com.alpha.examen.repository.PersonaRepository;
 import com.alpha.examen.response.ResponseApiRecord;
 import com.alpha.examen.response.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -81,6 +83,68 @@ public class PersonaService implements IPersona {
             return ResponseEntity.internalServerError().body(new ResponseApiRecord("No se logro hacer registro por falla de API-users", List.of()));
         }
 
+    }
+
+    @Override
+    public ResponseEntity<ResponseApiRecord> getPersonsAll() {
+
+        List<PersonaModel> personaModels = new ArrayList<>();
+        personaModels = personaRepository.findAll();
+
+        if(personaModels.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseApiRecord("No se encontraron registros en BD", List.of()));
+        }
+
+        List<UserDetails> detailsList = personaModels.stream()
+                .map(p -> new UserDetails(p.getNombre(),p.getApellido(), p.getEmail(), p.getPhone(), p.getCell(), p.getGenero()))
+                .toList();
+
+        ResponseApiRecord responseApiRecord = new ResponseApiRecord("Registros encontrados :" + detailsList.size(), detailsList);
+        return ResponseEntity.ok(responseApiRecord);
+    }
+
+    @Override
+    public ResponseEntity<ResponseApiRecord> updatePersonByName(String nombre,PersonaModel personaModel) {
+
+        List<PersonaModel> personaModels = new ArrayList<>();
+        personaModels = personaRepository.findByNombre(nombre.trim());
+
+        if(personaModels.size() > 1){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseApiRecord("Existen estudiantes con el mimo nombre " + nombre.trim(), List.of())); //Error 409
+        }
+
+        if(personaModels.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseApiRecord("No existen registros con nombre " + nombre.trim(), List.of())); // Error 404
+
+        }
+
+        PersonaModel personaModel1 = personaModels.get(0);
+        if(personaModel.getNombre() != null){
+            personaModel1.setNombre(personaModel.getNombre());
+        }
+        if(personaModel.getApellido() != null){
+            personaModel1.setApellido(personaModel.getApellido());
+        }
+        if(personaModel.getEmail() != null){
+            personaModel1.setEmail(personaModel.getEmail());
+        }
+        if(personaModel.getPhone() != null){
+            personaModel1.setPhone(personaModel.getPhone());
+        }
+        if(personaModel.getCell() != null){
+            personaModel1.setCell(personaModel.getCell());
+        }
+        if(personaModel.getGenero() != null){
+            personaModel1.setGenero(personaModel.getGenero());
+        }
+
+        PersonaModel updatePerson = personaRepository.save(personaModel1);
+        List<UserDetails> detailsList = new ArrayList<>();
+        UserDetails userDetails = new UserDetails(updatePerson.getNombre(),updatePerson.getApellido(),updatePerson.getEmail(),updatePerson.getPhone(),updatePerson.getCell(), updatePerson.getGenero());
+        detailsList.add(userDetails);
+
+        ResponseApiRecord responseApiRecord = new ResponseApiRecord("Registro actualizado", detailsList);
+        return ResponseEntity.ok(responseApiRecord);
     }
 
     public Mono<ResponseEntity<String>> obtenerGenderWithLamnbda(String gender){

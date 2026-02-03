@@ -1,12 +1,11 @@
 package com.alpha.examen.controller;
 
+import com.alpha.examen.model.PersonaModel;
 import com.alpha.examen.response.ResponseApiRecord;
 import com.alpha.examen.service.IPersona;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PersonaController {
@@ -15,8 +14,18 @@ public class PersonaController {
     private IPersona iPersona;
 
 
-    @GetMapping(value = "/student")
-    public ResponseEntity<ResponseApiRecord> createPerson(@RequestParam int registro) {
+    @PostMapping(value = "/student")
+    public ResponseEntity<ResponseApiRecord> creaPerson(@RequestParam int registro) {
         return iPersona.createPerson(registro);
+    }
+
+    @GetMapping(value = "/student/allRegisters")
+    public ResponseEntity<ResponseApiRecord> consiguePerson() {
+        return iPersona.getPersonsAll();
+    }
+
+    @PutMapping(value = "/student/{nombre}")
+    public ResponseEntity<ResponseApiRecord> actualizaPersonPorNombre(@PathVariable String nombre, @RequestBody PersonaModel personaModel) {
+        return iPersona.updatePersonByName(nombre,personaModel);
     }
 }

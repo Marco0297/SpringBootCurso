@@ -12,4 +12,6 @@ public class ExamenApplication {
 
 
     //http://localhost:8080/student?registro=5 -- crear usuaurios
+
+    //http://localhost:8080/student/allRegisters -- conseguir info d usuarios
 }
