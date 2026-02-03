@@ -11,4 +11,6 @@ public interface IPersona {
     ResponseEntity<ResponseApiRecord> getPersonsAll();
 
     ResponseEntity<ResponseApiRecord> updatePersonByName(String nombre, PersonaModel personaModel);
+
+    ResponseEntity<ResponseApiRecord> deletePersonById(Long id);
 }

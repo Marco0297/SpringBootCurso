@@ -106,11 +106,18 @@ public class PersonaService implements IPersona {
     @Override
     public ResponseEntity<ResponseApiRecord> updatePersonByName(String nombre,PersonaModel personaModel) {
 
+        if(nombre.isEmpty()){
+            return ResponseEntity.badRequest().body(new ResponseApiRecord("Debe indicar un nombre", List.of()));
+        }
+
         List<PersonaModel> personaModels = new ArrayList<>();
         personaModels = personaRepository.findByNombre(nombre.trim());
 
         if(personaModels.size() > 1){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseApiRecord("Existen estudiantes con el mimo nombre " + nombre.trim(), List.of())); //Error 409
+            List<UserDetails> repetidos = personaModels.stream()
+                    .map(p-> new UserDetails(p.getNombre(),p.getApellido(), p.getEmail(), p.getPhone(), p.getCell(), p.getGenero()))
+                    .toList();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseApiRecord("Existen estudiantes con el mimo nombre " + nombre.trim(), repetidos)); //Error 409
         }
 
         if(personaModels.isEmpty()){
@@ -145,6 +152,21 @@ public class PersonaService implements IPersona {
 
         ResponseApiRecord responseApiRecord = new ResponseApiRecord("Registro actualizado", detailsList);
         return ResponseEntity.ok(responseApiRecord);
+    }
+
+    @Override
+    public ResponseEntity<ResponseApiRecord> deletePersonById(Long id) {
+        if (personaRepository.existsById(id)) {
+            personaRepository.deleteById(id);
+
+            List<UserDetails> presentes = personaRepository.findAll().stream()
+                    .map(p-> new UserDetails(p.getNombre(),p.getApellido(), p.getEmail(), p.getPhone(), p.getCell(), p.getGenero()))
+                    .toList();
+
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ResponseApiRecord("Registro con ID " + id + ", eliminado correctamente", presentes));
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseApiRecord("No se encontraron registros en BD", List.of())); // Error 404
+        }
     }
 
     public Mono<ResponseEntity<String>> obtenerGenderWithLamnbda(String gender){

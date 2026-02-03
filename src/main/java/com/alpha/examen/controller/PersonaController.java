@@ -24,8 +24,13 @@ public class PersonaController {
         return iPersona.getPersonsAll();
     }
 
-    @PutMapping(value = "/student/{nombre}")
+    @PutMapping(value = "/student/update/{nombre}")
     public ResponseEntity<ResponseApiRecord> actualizaPersonPorNombre(@PathVariable String nombre, @RequestBody PersonaModel personaModel) {
         return iPersona.updatePersonByName(nombre,personaModel);
+    }
+
+    @DeleteMapping(value = "/student/delete/{id}")
+    public ResponseEntity<ResponseApiRecord> eliminaPersonPorId(@PathVariable Long id) {
+        return iPersona.deletePersonById(id);
     }
 }
