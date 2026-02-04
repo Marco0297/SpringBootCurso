@@ -1,4 +1,4 @@
-package com.personas;
+package com.sistemagestionestudiantes;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
