@@ -1,7 +1,6 @@
-#CONEXION A BD en memoria (H2)
 spring:
   datasource:
-    url: jdbc:h2:mem:personasdb;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    url: jdbc:h2:mem:estudiantesdb
     driver-class-name: org.h2.Driver
     username: sa
     password: ""
@@ -11,8 +10,4 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2-console #localhost:8080/h2-console
-
-
-#BD tendra 1 tabla -> 5 clumnas
-#nombre,apellidos, curp, edad
+      path: /h2-console
