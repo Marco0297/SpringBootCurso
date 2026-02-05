@@ -1,4 +1,4 @@
-package com.example.student.service.impl;
+package service.impl;
 
 import dto.RandomUserDTO;
 import entity.Student;
